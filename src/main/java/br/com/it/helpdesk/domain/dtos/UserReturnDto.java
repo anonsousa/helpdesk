@@ -7,6 +7,7 @@ import br.com.it.helpdesk.domain.models.User;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
 public record UserReturnDto(
         UUID id,
         String name,

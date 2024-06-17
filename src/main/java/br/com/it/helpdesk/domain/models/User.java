@@ -25,13 +25,19 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String password;
+
     @Column(length = 30)
+    @Enumerated(EnumType.STRING)
     private DepartmentEnum department;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 30)
     private RoleEnum role;
+
     @Column(name = "created_date")
     private LocalDateTime createdDate;
+
+    private boolean userEnabled = true;
 
     @OneToMany(mappedBy = "user")
     private Set<Ticket> tickets;
@@ -88,6 +94,14 @@ public class User implements Serializable {
 
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public boolean isUserEnabled() {
+        return userEnabled;
+    }
+
+    public void setUserEnabled(boolean userEnabled) {
+        this.userEnabled = userEnabled;
     }
 
     public Set<Ticket> getTickets() {
