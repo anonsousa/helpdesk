@@ -37,10 +37,12 @@ public class UserService {
         return new UserReturnDto(repository.save(user));
     }
 
+    @Transactional(readOnly = true)
     public UserReturnDto findUserById(UUID id){
         return new UserReturnDto(repository.findById(id).orElseThrow(() -> new NotFoundException("User not found with id" + id)));
     }
 
+    @Transactional(readOnly = true)
     public Page<UserReturnDto> findAllUsers(Pageable pageable){
         Page<User> userModel = repository.findAll(pageable);
         return userModel.map(UserReturnDto::new);
@@ -52,12 +54,13 @@ public class UserService {
 
         if (userModel.isPresent()){
 
-            boolean verifyPass = passwordEncoder.matches(userModel.get().getPassword(), userUpdateDto.password());
+            boolean verifyPass = passwordEncoder.matches(userUpdateDto.password(), userModel.get().getPassword());
             if (verifyPass){
                 var user = new User();
                 BeanUtils.copyProperties(userUpdateDto, user);
+                user.setPassword(userModel.get().getPassword());
                 user.setCreatedDate(LocalDateTime.now().withNano(0));
-                return new UserReturnDto(user);
+                return new UserReturnDto(repository.save(user));
             } else {
                 throw new InvalidRequestException("Invalid Password!");
             }
