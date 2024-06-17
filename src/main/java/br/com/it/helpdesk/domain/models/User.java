@@ -25,8 +25,10 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String password;
+    @Column(length = 30)
     private DepartmentEnum department;
     @Enumerated(EnumType.STRING)
+    @Column(length = 30)
     private RoleEnum role;
     @Column(name = "created_date")
     private LocalDateTime createdDate;
