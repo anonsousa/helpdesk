@@ -5,6 +5,7 @@ import br.com.it.helpdesk.domain.dtos.UserReturnDto;
 import br.com.it.helpdesk.domain.dtos.UserSignUpDto;
 import br.com.it.helpdesk.domain.dtos.UserUpdateDto;
 import br.com.it.helpdesk.domain.services.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +29,7 @@ public class UserController {
     private PagedResourcesAssembler<UserReturnDto> pagedResourcesAssembler;
 
     @PostMapping("/user/register")
-    public ResponseEntity<UserReturnDto> createUser(@RequestBody @Valid UserSignUpDto user){
+    public ResponseEntity<UserReturnDto> createUser(@RequestBody @Valid UserSignUpDto user) throws MessagingException {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 

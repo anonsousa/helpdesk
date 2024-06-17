@@ -8,6 +8,7 @@ import br.com.it.helpdesk.domain.repositories.UserRepository;
 import br.com.it.helpdesk.infra.Pbkdf2PasswordEncoder;
 import br.com.it.helpdesk.infra.exceptions.InvalidRequestException;
 import br.com.it.helpdesk.infra.exceptions.NotFoundException;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,17 +25,28 @@ public class UserService {
     private UserRepository repository;
 
     @Autowired
+    private MailService mailService;
+
+    @Autowired
     private Pbkdf2PasswordEncoder passwordEncoder;
 
 
     @Transactional
-    public UserReturnDto createUser(UserSignUpDto userSignUpDto){
+    public UserReturnDto createUser(UserSignUpDto userSignUpDto) throws MessagingException {
         var user = new User();
 
         BeanUtils.copyProperties(userSignUpDto, user);
         user.setPassword(passwordEncoder.encode(userSignUpDto.password()));
         user.setCreatedDate(LocalDateTime.now().withNano(0));
-        return new UserReturnDto(repository.save(user));
+        repository.save(user);
+
+        try{
+            mailService.sendEmail(user.getName(), user.getEmail());
+        } catch (MessagingException e){
+            System.out.println(e);
+        }
+
+        return new UserReturnDto(user);
     }
 
     @Transactional(readOnly = true)
@@ -64,14 +76,11 @@ public class UserService {
             } else {
                 throw new InvalidRequestException("Invalid Password!");
             }
-
         }
-
         throw new NotFoundException("User not found!");
     }
 
     @Transactional
-    //Logical delection
     public void deleteUser(UUID id){
         var user = repository.findById(id);
         if (user.isPresent()){
