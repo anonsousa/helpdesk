@@ -1,0 +1,16 @@
+version: '3.3'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: db-helpdesk
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
