@@ -1,5 +1,6 @@
 package br.com.it.helpdesk.domain.dtos;
 
+import br.com.it.helpdesk.domain.models.Comment;
 import br.com.it.helpdesk.domain.models.DepartmentEnum;
 import br.com.it.helpdesk.domain.models.PriorityEnum;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +20,8 @@ public record TicketAddDto(
         @NotNull
         UUID userId,
         @NotNull
-        UUID assignedToId
+        UUID assignedToId,
+        @NotNull
+        CommentAddDto coment
 ) {
 }

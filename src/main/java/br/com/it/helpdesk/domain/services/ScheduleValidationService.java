@@ -20,6 +20,7 @@ public class ScheduleValidationService {
         LocalTime startTime = LocalTime.of(7, 30);
         LocalTime endTime = LocalTime.of(18, 0);
 
+
         return !time.isBefore(startTime) && !time.isAfter(endTime);
     }
 }
